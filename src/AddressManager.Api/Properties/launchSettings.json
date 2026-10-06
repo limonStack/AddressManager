@@ -8,8 +8,7 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5017",
-      "launchBrowser": true,
-      "launchUrl": "http://localhost:4200"
+      "launchBrowser": false
     }
   }
 }

@@ -20,7 +20,7 @@ AddressManager/
 │   │   └── Migrations/
 │   └── AddressManager.Client/       # Angular 19 (порт 4200)
 │       └── src/
-├── AddressManager.sln
+├── AddressManager.sln                 # решение для Visual Studio
 ├── start-dev.bat                    # запуск одним кликом
 └── README.md
 ```
@@ -31,9 +31,11 @@ AddressManager/
 Запускает API, который автоматически поднимет Angular dev-сервер.
 
 ### Вариант 2 — Visual Studio
-1. Открыть `AddressManager.sln`
-2. Нажать **F5** (профиль `http`)
-3. API стартует → автоматически запускает `npm start` в фоне → открывает браузер на http://localhost:4200
+1. Открыть `AddressManager.sln`.
+2. Выбрать профиль **http** у `AddressManager.Api` и нажать **F5**.
+3. API стартует в отладке, автоматически запускает `npm ci` (только при первом запуске) и `npm start` для Angular. Браузер откроется сам, когда фронтенд станет доступен на http://localhost:4200.
+
+При остановке отладки Angular-процесс также завершается. Никаких отдельных запусков API, БД или фронтенда не требуется.
 
 ## Первый запуск — миграции
 

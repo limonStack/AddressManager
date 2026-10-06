@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressManager.Api", "src\AddressManager.Api\AddressManager.Api.csproj", "{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressManager.Domain", "src\AddressManager.Domain\AddressManager.Domain.csproj", "{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AddressManager.Client", "AddressManager.Client", "{F7D98C96-29A8-43B5-9C8A-062D73A2DB7C}"
+	ProjectSection(SolutionItems) = preProject
+		src\AddressManager.Client\angular.json = src\AddressManager.Client\angular.json
+		src\AddressManager.Client\package.json = src\AddressManager.Client\package.json
+		src\AddressManager.Client\package-lock.json = src\AddressManager.Client\package-lock.json
+		src\AddressManager.Client\tsconfig.app.json = src\AddressManager.Client\tsconfig.app.json
+		src\AddressManager.Client\tsconfig.json = src\AddressManager.Client\tsconfig.json
+		src\AddressManager.Client\README.md = src\AddressManager.Client\README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Debug|x64.Build.0 = Debug|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Release|x64.Build.0 = Release|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED}.Release|x86.Build.0 = Release|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Debug|x64.Build.0 = Debug|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Debug|x86.Build.0 = Debug|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Release|x64.ActiveCfg = Release|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Release|x64.Build.0 = Release|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Release|x86.ActiveCfg = Release|Any CPU
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EA8E7C2C-28F0-4265-AEC8-A5B79E788AED} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{30B5D1BC-D800-4B02-A1DA-5E66D4268FB8} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{F7D98C96-29A8-43B5-9C8A-062D73A2DB7C} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+	EndGlobalSection
+EndGlobal

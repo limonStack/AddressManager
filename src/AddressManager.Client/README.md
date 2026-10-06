@@ -1,6 +1,10 @@
-# AddressApp — Angular Frontend
+# AddressManager.Client — Angular Frontend
 
-Angular 19 приложение для отображения адресов из базы данных через AddressApi.
+Angular 19 приложение для отображения адресов из базы данных через AddressManager.Api.
+
+## Запуск из Visual Studio
+
+Откройте `AddressManager.sln` в корне репозитория и нажмите **F5**. API сам запускает Angular и открывает браузер после готовности фронтенда.
 
 ## Структура проекта
 
@@ -21,18 +25,18 @@ src/
 │   ├── app.config.ts
 │   └── app.routes.ts
 └── environments/
-    ├── environment.ts       # dev: http://localhost:5000/api
+    ├── environment.ts       # dev: http://localhost:5017/api
     └── environment.prod.ts  # prod: /api
 ```
 
 ## Запуск
 
-### 1. Запустить API (AddressApi)
+### Ручной запуск API (не требуется при F5)
 
 ```powershell
-cd e:\Work\Projects\AddressApi
+cd e:\Work\Projects\AddressManager\src\AddressManager.Api
 dotnet run
-# API будет доступен на http://localhost:5000
+# API будет доступен на http://localhost:5017
 ```
 
 ### 2. Запустить Angular dev-сервер
@@ -40,7 +44,7 @@ dotnet run
 Открыть новый терминал (обязательно после перезапуска — чтобы Node.js был в PATH):
 
 ```powershell
-cd e:\Work\Projects\AddressApp
+cd e:\Work\Projects\AddressManager\src\AddressManager.Client
 npm start
 # Фронтенд: http://localhost:4200
 ```
