@@ -6,63 +6,35 @@
 // Доступные эндпоинты:
 //   GET /api/addresses        — список всех адресов
 //   GET /api/addresses/{id}   — один адрес по идентификатору
+//
+// Контроллер намеренно тонкий: он не знает об EF Core, SQL или структуре БД.
+// Вся логика работы с данными инкапсулирована в IAddressRepository.
 // ============================================================
 
-using AddressManager.Domain.Data;
+using AddressManager.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AddressManager.Api.Controllers;
 
-// [ApiController] — включает автоматическую валидацию модели, привязку параметров из JSON,
-//                   и стандартные ответы 400 Bad Request при ошибках модели.
-// [Route("api/[controller]")] — [controller] подставляется как "addresses" (имя класса без суффикса Controller)
 [ApiController]
 [Route("api/[controller]")]
 public class AddressesController : ControllerBase
 {
-    // Контекст базы данных — внедряется через DI (зарегистрирован в Program.cs)
-    private readonly AppDbContext _db;
+    // Зависимость от абстракции, а не от конкретной реализации.
+    // Это позволяет подменить реализацию в тестах (mock) или при смене БД.
+    private readonly IAddressRepository _repo;
 
-    // Конструктор с инъекцией зависимости — короткая форма присвоения поля
-    public AddressesController(AppDbContext db) => _db = db;
+    public AddressesController(IAddressRepository repo) => _repo = repo;
 
     /// <summary>
-    /// Возвращает список всех адресов с полной географической иерархией:
-    /// Адрес → Город → Регион → Страна.
-    /// Результат отсортирован: сначала по стране, затем по городу, затем по улице.
+    /// Возвращает список всех адресов, отсортированных по стране → городу → улице.
     /// </summary>
     // GET api/addresses
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var addresses = await _db.Addresses
-            // Include + ThenInclude загружают связанные сущности через JOIN.
-            // Без этого навигационные свойства (City, Region, Country) были бы null.
-            .Include(a => a.City)
-                .ThenInclude(c => c.Region)
-                    .ThenInclude(r => r.Country)
-            // Select проецирует EF-сущности в анонимный DTO.
-            // Это позволяет вернуть плоский объект вместо вложенного графа сущностей,
-            // что удобнее для Angular и безопаснее (не утекают внутренние поля).
-            .Select(a => new
-            {
-                a.Id,
-                a.Street,
-                a.HouseNumber,
-                a.ApartmentNumber,
-                a.PostalCode,
-                City        = a.City.Name,
-                Region      = a.City.Region.Name,
-                Country     = a.City.Region.Country.Name,
-                CountryCode = a.City.Region.Country.Code   // ISO 3166-1 alpha-2 (например "UA")
-            })
-            .OrderBy(a => a.Country)
-            .ThenBy(a => a.City)
-            .ThenBy(a => a.Street)
-            .ToListAsync(); // выполняем SQL-запрос асинхронно
-
-        return Ok(addresses); // 200 OK + JSON-массив
+        var addresses = await _repo.GetAllAsync();
+        return Ok(addresses);
     }
 
     /// <summary>
@@ -70,29 +42,10 @@ public class AddressesController : ControllerBase
     /// Если адрес не найден — 404 Not Found.
     /// </summary>
     // GET api/addresses/5
-    [HttpGet("{id:int}")] // {id:int} — маршрутное ограничение: принимаем только целые числа
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var address = await _db.Addresses
-            .Include(a => a.City)
-                .ThenInclude(c => c.Region)
-                    .ThenInclude(r => r.Country)
-            .Where(a => a.Id == id)
-            .Select(a => new
-            {
-                a.Id,
-                a.Street,
-                a.HouseNumber,
-                a.ApartmentNumber,
-                a.PostalCode,
-                City        = a.City.Name,
-                Region      = a.City.Region.Name,
-                Country     = a.City.Region.Country.Name,
-                CountryCode = a.City.Region.Country.Code
-            })
-            .FirstOrDefaultAsync(); // null, если запись не найдена
-
-        // Паттерн: null → 404 Not Found, иначе → 200 OK + объект
+        var address = await _repo.GetByIdAsync(id);
         return address is null ? NotFound() : Ok(address);
     }
 }

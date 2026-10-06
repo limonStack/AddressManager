@@ -9,6 +9,7 @@
 // ============================================================
 
 using AddressManager.Domain.Data;
+using AddressManager.Domain.Repositories;
 using AddressManager.Api.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,6 +34,10 @@ builder.Services.AddCors(options =>
 // Строка подключения берётся из appsettings.json → "ConnectionStrings:AddressDb".
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AddressDb")));
+
+// Регистрируем репозиторий адресов.
+// Scoped — один экземпляр на HTTP-запрос, что соответствует времени жизни DbContext.
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 
 // В режиме разработки автоматически запускаем Angular dev-сервер
 // как фоновый IHostedService, чтобы не запускать его вручную.
