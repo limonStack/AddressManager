@@ -5,26 +5,22 @@ using Microsoft.EntityFrameworkCore;
 namespace AddressManager.Domain.Repositories;
 
 /// <summary>
-/// Реализация репозитория адресов на основе Entity Framework Core.
-///
-/// Вся логика работы с БД сосредоточена здесь: Include, ThenInclude, Select, OrderBy.
-/// Контроллер об этом не знает — он работает только через IAddressRepository.
+/// Реализация Query-репозитория адресов.
+/// Отвечает исключительно за чтение — никаких SaveChanges здесь нет.
 /// </summary>
-public sealed class AddressRepository : IAddressRepository
+public sealed class AddressQueryRepository : IAddressQueryRepository
 {
     private readonly AppDbContext _db;
 
-    public AddressRepository(AppDbContext db) => _db = db;
+    public AddressQueryRepository(AppDbContext db) => _db = db;
 
     /// <inheritdoc/>
     public async Task<IEnumerable<AddressDto>> GetAllAsync()
     {
         return await _db.Addresses
-            // Загружаем всю географическую цепочку: Адрес → Город → Регион → Страна
             .Include(a => a.City)
                 .ThenInclude(c => c.Region)
                     .ThenInclude(r => r.Country)
-            // Проецируем в DTO — возвращаем плоский объект вместо графа EF-сущностей
             .Select(a => new AddressDto
             {
                 Id              = a.Id,
@@ -63,6 +59,6 @@ public sealed class AddressRepository : IAddressRepository
                 Country         = a.City.Region.Country.Name,
                 CountryCode     = a.City.Region.Country.Code
             })
-            .FirstOrDefaultAsync(); // null если не найден
+            .FirstOrDefaultAsync();
     }
 }

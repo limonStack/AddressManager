@@ -1,16 +1,14 @@
 // ============================================================
 // AddressesController — REST API для работы с адресами
 //
-// Маршрут: /api/addresses
+// CQRS в действии:
+//   GET-запросы  → IAddressQueryRepository   (чтение)
+//   POST-запросы → IAddressCommandRepository (запись)
 //
-// Доступные эндпоинты:
-//   GET /api/addresses        — список всех адресов
-//   GET /api/addresses/{id}   — один адрес по идентификатору
-//
-// Контроллер намеренно тонкий: он не знает об EF Core, SQL или структуре БД.
-// Вся логика работы с данными инкапсулирована в IAddressRepository.
+// Контроллер не знает об EF Core, SQL и структуре БД.
 // ============================================================
 
+using AddressManager.Domain.Commands;
 using AddressManager.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,32 +18,41 @@ namespace AddressManager.Api.Controllers;
 [Route("api/[controller]")]
 public class AddressesController : ControllerBase
 {
-    // Зависимость от абстракции, а не от конкретной реализации.
-    // Это позволяет подменить реализацию в тестах (mock) или при смене БД.
-    private readonly IAddressRepository _repo;
+    private readonly IAddressQueryRepository   _query;
+    private readonly IAddressCommandRepository _command;
 
-    public AddressesController(IAddressRepository repo) => _repo = repo;
-
-    /// <summary>
-    /// Возвращает список всех адресов, отсортированных по стране → городу → улице.
-    /// </summary>
-    // GET api/addresses
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public AddressesController(
+        IAddressQueryRepository   query,
+        IAddressCommandRepository command)
     {
-        var addresses = await _repo.GetAllAsync();
-        return Ok(addresses);
+        _query   = query;
+        _command = command;
     }
 
-    /// <summary>
-    /// Возвращает один адрес по числовому идентификатору.
-    /// Если адрес не найден — 404 Not Found.
-    /// </summary>
-    // GET api/addresses/5
+    /// <summary>GET /api/addresses — все адреса.</summary>
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+        => Ok(await _query.GetAllAsync());
+
+    /// <summary>GET /api/addresses/5 — адрес по Id.</summary>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var address = await _repo.GetByIdAsync(id);
+        var address = await _query.GetByIdAsync(id);
         return address is null ? NotFound() : Ok(address);
+    }
+
+    /// <summary>
+    /// POST /api/addresses — создать новый адрес.
+    /// Принимает CreateAddressCommand (модель записи),
+    /// возвращает AddressDto созданного адреса (модель чтения) со статусом 201 Created.
+    /// </summary>
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateAddressCommand command)
+    {
+        var created = await _command.CreateAsync(command);
+
+        // 201 Created + Location: /api/addresses/{id} + тело ответа
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 }

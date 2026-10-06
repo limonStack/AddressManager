@@ -1,0 +1,73 @@
+<div class="form-card">
+  <h3 class="form-title">Новый адрес</h3>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- Улица -->
+    <div class="field">
+      <label for="street">Улица *</label>
+      <input id="street" type="text" formControlName="street" placeholder="вул. Хрещатик" />
+      <span class="error" *ngIf="f['street'].touched && f['street'].errors?.['required']">
+        Обязательное поле
+      </span>
+      <span class="error" *ngIf="f['street'].touched && f['street'].errors?.['maxlength']">
+        Не более 200 символов
+      </span>
+    </div>
+
+    <!-- Дом и квартира в одну строку -->
+    <div class="field-row">
+      <div class="field">
+        <label for="houseNumber">Дом *</label>
+        <input id="houseNumber" type="text" formControlName="houseNumber" placeholder="1" />
+        <span class="error" *ngIf="f['houseNumber'].touched && f['houseNumber'].errors?.['required']">
+          Обязательное поле
+        </span>
+      </div>
+
+      <div class="field">
+        <label for="apartmentNumber">Квартира</label>
+        <input id="apartmentNumber" type="text" formControlName="apartmentNumber" placeholder="10" />
+      </div>
+    </div>
+
+    <!-- Индекс -->
+    <div class="field">
+      <label for="postalCode">Индекс *</label>
+      <input id="postalCode" type="text" formControlName="postalCode" placeholder="01001" />
+      <span class="error" *ngIf="f['postalCode'].touched && f['postalCode'].errors?.['required']">
+        Обязательное поле
+      </span>
+    </div>
+
+    <!-- Город -->
+    <div class="field">
+      <label for="cityId">Город *</label>
+      <select id="cityId" formControlName="cityId">
+        <option [ngValue]="null" disabled>
+          {{ loadingCities ? 'Загрузка...' : '— выберите город —' }}
+        </option>
+        <option *ngFor="let city of cities" [ngValue]="city.id">
+          {{ city.displayName }}
+        </option>
+      </select>
+      <span class="error" *ngIf="f['cityId'].touched && f['cityId'].errors?.['required']">
+        Выберите город
+      </span>
+    </div>
+
+    <!-- Ошибка сервера -->
+    <p class="submit-error" *ngIf="submitError">{{ submitError }}</p>
+
+    <!-- Кнопки -->
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" (click)="onCancel()" [disabled]="submitting">
+        Отмена
+      </button>
+      <button type="submit" class="btn-save" [disabled]="submitting">
+        {{ submitting ? 'Сохранение...' : 'Сохранить' }}
+      </button>
+    </div>
+
+  </form>
+</div>

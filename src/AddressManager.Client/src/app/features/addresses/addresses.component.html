@@ -7,7 +7,7 @@
         <span class="page-header__icon">📍</span>
         <div>
           <h1>Address Database</h1>
-          <p class="page-header__sub">Просмотр адресов из базы данных</p>
+          <p class="page-header__sub">Просмотр и управление адресами</p>
         </div>
       </div>
       @if (!loading() && !error()) {
@@ -18,7 +18,7 @@
     </div>
   </header>
 
-  <!-- Search bar -->
+  <!-- Toolbar: поиск + кнопка добавления -->
   @if (!loading() && !error()) {
     <div class="toolbar">
       <div class="search-box">
@@ -34,10 +34,25 @@
           <button class="search-box__clear" (click)="search.set('')">✕</button>
         }
       </div>
+
+      <!-- Кнопка переключает видимость формы -->
+      <button class="btn-add" (click)="openForm()" [disabled]="showForm()">
+        <span>＋</span> Добавить адрес
+      </button>
     </div>
   }
 
-  <!-- States -->
+  <!-- Inline-форма создания адреса -->
+  @if (showForm()) {
+    <div class="form-area">
+      <app-address-form
+        (saved)="onAddressSaved($event)"
+        (cancel)="onFormCancel()"
+      />
+    </div>
+  }
+
+  <!-- Состояние: загрузка -->
   @if (loading()) {
     <div class="state-box">
       <div class="spinner"></div>
@@ -45,6 +60,7 @@
     </div>
   }
 
+  <!-- Состояние: ошибка -->
   @if (error()) {
     <div class="state-box state-box--error">
       <span class="state-box__icon">⚠️</span>
@@ -52,7 +68,7 @@
     </div>
   }
 
-  <!-- Table -->
+  <!-- Таблица -->
   @if (!loading() && !error()) {
     <div class="table-wrapper">
       <table class="addr-table">
@@ -94,7 +110,11 @@
           } @empty {
             <tr>
               <td colspan="6" class="empty-row">
-                Ничего не найдено по запросу «{{ search() }}»
+                @if (search()) {
+                  Ничего не найдено по запросу «{{ search() }}»
+                } @else {
+                  Нет адресов. Добавьте первый!
+                }
               </td>
             </tr>
           }

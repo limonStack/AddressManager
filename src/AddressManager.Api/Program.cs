@@ -35,9 +35,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AddressDb")));
 
-// Регистрируем репозиторий адресов.
-// Scoped — один экземпляр на HTTP-запрос, что соответствует времени жизни DbContext.
-builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+// CQRS: регистрируем Query и Command репозитории раздельно.
+// Scoped — один экземпляр на HTTP-запрос, соответствует времени жизни DbContext.
+builder.Services.AddScoped<IAddressQueryRepository,   AddressQueryRepository>();
+builder.Services.AddScoped<IAddressCommandRepository, AddressCommandRepository>();
+builder.Services.AddScoped<ICityRepository,           CityRepository>();
 
 // В режиме разработки автоматически запускаем Angular dev-сервер
 // как фоновый IHostedService, чтобы не запускать его вручную.
