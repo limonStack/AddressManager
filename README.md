@@ -20,47 +20,54 @@ AddressManager/
 │   │   └── Migrations/
 │   └── AddressManager.Client/       # Angular 19 (порт 4200)
 │       └── src/
-├── AddressManager.sln                 # решение для Visual Studio
+├── AddressManager.sln               # решение для Visual Studio
 ├── start-dev.bat                    # запуск одним кликом
 └── README.md
 ```
 
-## Запуск одним кликом
+## Запуск
 
-### Вариант 1 — двойной клик на `start-dev.bat`
-Запускает API, который автоматически поднимет Angular dev-сервер.
-
-### Вариант 2 — Visual Studio
+### Вариант 1 — Visual Studio (рекомендуется)
 1. Открыть `AddressManager.sln`.
 2. Выбрать профиль **http** у `AddressManager.Api` и нажать **F5**.
-3. API стартует в отладке, автоматически запускает `npm ci` (только при первом запуске) и `npm start` для Angular. Браузер откроется сам, когда фронтенд станет доступен на http://localhost:4200.
+3. API стартует в отладке и автоматически:
+   - применяет миграции и создаёт БД (если её ещё нет)
+   - устанавливает npm-зависимости (`npm ci`) при первом запуске
+   - запускает Angular dev-сервер
+   - открывает браузер, когда http://localhost:4200 станет доступен
 
-При остановке отладки Angular-процесс также завершается. Никаких отдельных запусков API, БД или фронтенда не требуется.
+При остановке отладки Angular-процесс также завершается автоматически.
 
-## Первый запуск — миграции
+### Вариант 2 — ручной запуск из терминала
 
+Запустить API (в первом терминале):
 ```powershell
 cd src\AddressManager.Api
-
-# Установить dotnet-ef (один раз)
-dotnet tool install --global dotnet-ef
-
-# Применить миграции (создаст БД в LocalDB)
-dotnet ef database update --project ..\AddressManager.Domain\AddressManager.Domain.csproj --startup-project AddressManager.Api.csproj
+dotnet run
 ```
 
-## Новая миграция при изменении моделей
+API сам поднимет Angular dev-сервер. Если нужно запустить Angular отдельно — второй терминал:
+```powershell
+cd src\AddressManager.Client
+npm start
+```
 
+## Миграции
+
+Миграции применяются **автоматически** при каждом запуске API в режиме Development (`dotnet run` или F5). Вручную запускать `dotnet ef database update` не нужно.
+
+Если нужно добавить новую миграцию при изменении моделей:
 ```powershell
 cd src\AddressManager.Api
 dotnet ef migrations add <НазваниеМиграции> --project ..\AddressManager.Domain\AddressManager.Domain.csproj --startup-project AddressManager.Api.csproj
-dotnet ef database update --project ..\AddressManager.Domain\AddressManager.Domain.csproj --startup-project AddressManager.Api.csproj
 ```
+
+После этого просто запусти API — миграция применится автоматически.
 
 ## Порты
 
-| Сервис  | URL                          |
-|---------|------------------------------|
-| API     | http://localhost:5017        |
-| Angular | http://localhost:4200        |
-| DB      | (localdb)\mssqllocaldb       |
+| Сервис  | URL                    |
+|---------|------------------------|
+| API     | http://localhost:5017  |
+| Angular | http://localhost:4200  |
+| DB      | (localdb)\mssqllocaldb |
