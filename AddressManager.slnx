@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AddressManager.Api/AddressManager.Api.csproj" />
+    <Project Path="src/AddressManager.Domain/AddressManager.Domain.csproj" />
+  </Folder>
+</Solution>

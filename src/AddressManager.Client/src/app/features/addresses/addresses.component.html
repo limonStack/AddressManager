@@ -1,0 +1,106 @@
+<div class="page">
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="page-header__inner">
+      <div class="page-header__title">
+        <span class="page-header__icon">📍</span>
+        <div>
+          <h1>Address Database</h1>
+          <p class="page-header__sub">Просмотр адресов из базы данных</p>
+        </div>
+      </div>
+      @if (!loading() && !error()) {
+        <div class="page-header__badge">
+          {{ filtered().length }} / {{ addresses().length }} записей
+        </div>
+      }
+    </div>
+  </header>
+
+  <!-- Search bar -->
+  @if (!loading() && !error()) {
+    <div class="toolbar">
+      <div class="search-box">
+        <span class="search-box__icon">🔍</span>
+        <input
+          class="search-box__input"
+          type="text"
+          placeholder="Поиск по улице, городу, региону, стране, индексу..."
+          [value]="search()"
+          (input)="search.set($any($event.target).value)"
+        />
+        @if (search()) {
+          <button class="search-box__clear" (click)="search.set('')">✕</button>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- States -->
+  @if (loading()) {
+    <div class="state-box">
+      <div class="spinner"></div>
+      <p>Загрузка данных...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="state-box state-box--error">
+      <span class="state-box__icon">⚠️</span>
+      <p>{{ error() }}</p>
+    </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() && !error()) {
+    <div class="table-wrapper">
+      <table class="addr-table">
+        <thead>
+          <tr>
+            <th class="col-num">#</th>
+            <th class="sortable" (click)="sort('country')">
+              Страна <span class="sort-icon">{{ sortIcon('country') }}</span>
+            </th>
+            <th class="sortable" (click)="sort('region')">
+              Регион <span class="sort-icon">{{ sortIcon('region') }}</span>
+            </th>
+            <th class="sortable" (click)="sort('city')">
+              Город <span class="sort-icon">{{ sortIcon('city') }}</span>
+            </th>
+            <th class="sortable" (click)="sort('street')">
+              Адрес <span class="sort-icon">{{ sortIcon('street') }}</span>
+            </th>
+            <th class="sortable" (click)="sort('postalCode')">
+              Индекс <span class="sort-icon">{{ sortIcon('postalCode') }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (addr of filtered(); track addr.id; let i = $index) {
+            <tr>
+              <td class="col-num text-muted">{{ i + 1 }}</td>
+              <td>
+                <div class="country-cell">
+                  <span class="flag">{{ flagEmoji(addr.countryCode) }}</span>
+                  {{ addr.country }}
+                </div>
+              </td>
+              <td>{{ addr.region }}</td>
+              <td class="city-cell">{{ addr.city }}</td>
+              <td>{{ fullAddress(addr) }}</td>
+              <td><span class="postal-badge">{{ addr.postalCode }}</span></td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-row">
+                Ничего не найдено по запросу «{{ search() }}»
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>
